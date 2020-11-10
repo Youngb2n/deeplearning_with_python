@@ -131,7 +131,7 @@ def main_worker(args):
 
     for epoch in range(args.start_epoch, args.epochs):
 
-        utils.adjust_learning_rate(optimizer, epoch, args)
+        utils.adjust_learning_rate(optimizer, epoch, args.start_epoch)
         before_best_acc1=best_acc1
 
         # train for one epoch
