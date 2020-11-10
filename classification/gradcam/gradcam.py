@@ -1,19 +1,29 @@
-import modellist
+import os
 import utils
 import cv2
 import numpy as np
 import argparse
 import torch
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+import modellist
 
 parser = argparse.ArgumentParser(description='GradCAM')
-parser.add_argument('-a', '--modelname', metavar='ARCH', default='resnet18', help='model architecture: ')
+parser.add_argument('-m', '--modelname', metavar='ARCH', default='resnet18', help='model architecture: ')
+parser.add_argument('-a', '--attention', default='', help='attention')
 parser.add_argument('path',type=str, help='image path')
 parser.add_argument('state_dict_path',type=str, help='state_dict_path')
 
 args = parser.parse_args()
 
-
-model = modellist.Modellist(args.modelname, args.numclasses)
+if args.attention == 'se':
+    attention_module='se_layer'
+elif args.attention == 'cbam':
+    attention_module='cbam_layer'
+else:
+    attention_module = None 
+        
+model = modellist.Modellist(args.modelname, args.numclasses, attention_module)
 model.load_state_dict(torch.load(args.state_dict_path))
 
 image_path = args.path
