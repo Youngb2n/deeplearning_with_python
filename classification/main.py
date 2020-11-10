@@ -41,7 +41,7 @@ parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                     help='evaluate model on validation set')
-parser.add_argument('-h','--hgpath', default='', type=str, metavar='PATH',
+parser.add_argument('--hgpath', default='', type=str, metavar='PATH',
                     help='history graph path')
 
 history_dict = {'train':{'acc':[],'loss':[]},'val':{'acc':[],'loss':[]}}
