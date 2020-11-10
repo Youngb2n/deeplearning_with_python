@@ -55,7 +55,8 @@ def main():
 def main_worker(args):
     global history_dict
     global best_acc1
-
+    history_path = ''
+    
     device = torch.device('cuda')
     if device is not None:
         print("Use GPU: {} for training".format(device))
@@ -130,7 +131,7 @@ def main_worker(args):
 
     for epoch in range(args.start_epoch, args.epochs):
 
-        adjust_learning_rate(optimizer, epoch, args)
+        utils.adjust_learning_rate(optimizer, epoch, args)
         before_best_acc1=best_acc1
 
         # train for one epoch
@@ -141,14 +142,14 @@ def main_worker(args):
         model.load_state_dict(best_acc_wts)
         is_best = before_best_acc1 < best_acc1
 
-        save_checkpoint({
+        utils.save_checkpoint({
             'epoch': epoch + 1,
             'arch': args.modelname,
             'state_dict': model.state_dict(),
             'best_acc1': best_acc1,
             'optimizer' : optimizer.state_dict(),
             'history_dict' : history_dict,
-            }, is_best)
+            }, is_best, history_path)
     if args.hgpath:        
         utils.train_graph(args.epochs, history_dict, args.hgpath)
     
@@ -206,16 +207,8 @@ def val(val_loader, model, criterion, device,best_acc_wts):
         best_acc_wts = copy.deepcopy(model.state_dict())
     return best_acc_wts
 
-def save_checkpoint(state, is_best, filename='checkpoint.pth'):
-    torch.save(state, filename)
-    if is_best:
-        shutil.copyfile(filename, 'model_best.pth')
 
-def adjust_learning_rate(optimizer, epoch, args):
-    """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = args.lr * (0.1 ** (epoch // 30))
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+
 
 
 
