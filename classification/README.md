@@ -37,7 +37,7 @@ optional arguments:
 ```
 
 
-## GradCAm
+## GradCAM
 ```
 ! python3 /content/ex/gradcam.py -h
 ```
